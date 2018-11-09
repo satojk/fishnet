@@ -1,0 +1,2024 @@
+<!doctype html>
+<html lang="en">
+  <!-- Lichess is open source! See https://github.com/ornicar/lila -->
+  <head>
+    <meta charset="utf-8">
+    
+    <meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27; https://lichess1.org; connect-src &#x27;self&#x27; https://lichess1.org wss://socket.lichess.org:* https://explorer.lichess.ovh https://tablebase.lichess.ovh; style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27; https://lichess1.org https://fonts.googleapis.com; font-src &#x27;self&#x27; lichess1.org https://fonts.gstatic.com; frame-src &#x27;self&#x27; https://lichess1.org https://www.youtube.com; worker-src &#x27;self&#x27; https://lichess1.org; img-src data: *; script-src &#x27;nonce-nRdFoRlLkkwcRUpN59FI&#x27; &#x27;unsafe-inline&#x27; &#x27;self&#x27; https://lichess1.org; base-uri &#x27;none&#x27;;">
+    
+    
+    <title>Advanced search • lichess.org</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:500&text=0123456789:." rel="stylesheet">
+    
+    
+    <link href="//lichess1.org/assets/_8O6y3E/stylesheets/common.css" type="text/css" rel="stylesheet"/>
+    <link href="//lichess1.org/assets/_8O6y3E/stylesheets/board.css" type="text/css" rel="stylesheet"/>
+    
+    
+    
+    
+    
+    
+    
+<link href="//lichess1.org/assets/_8O6y3E/stylesheets/search.css" type="text/css" rel="stylesheet"/>
+
+    <link id="piece-sprite" href="//lichess1.org/assets/_8O6y3E/stylesheets/piece/cburnett.css" type="text/css" rel="stylesheet"/>
+    <meta content="Search in 957,716,386 chess games using advanced criterions" name="description">
+    <link id="favicon" rel="shortcut icon" href="//lichess1.org/assets/images/favicon-32-white.png" type="image/x-icon" />
+    <link rel="mask-icon" href="//lichess1.org/assets/favicon.svg" color="black">
+    <link rel="icon" type="image/png" href="//lichess1.org/assets/favicon.256.png" sizes="256x256"/><link rel="icon" type="image/png" href="//lichess1.org/assets/favicon.128.png" sizes="128x128"/><link rel="icon" type="image/png" href="//lichess1.org/assets/favicon.64.png" sizes="64x64"/>
+    
+    <meta name="google" content="notranslate" />
+    <meta property="og:title" content="Search in 957,716,386 chess games"/><meta property="og:description" content="Search in 957,716,386 chess games using advanced criterions"/><meta property="og:url" content="https://lichess.org/games/search"/><meta property="og:type" content="website"/><meta property="og:site_name" content="lichess.org"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Search in 957,716,386 chess games"/><meta name="twitter:description" content="Search in 957,716,386 chess games using advanced criterions"/><meta name="twitter:site" content="@lichess"/>
+    
+    <link href="/blog.atom" type="application/atom+xml" rel="alternate" title="Blog" />
+    
+    
+    <link rel="preload" href="//lichess1.org/assets/font81/fonts/lichess.woff" as="font" type="font/woff" crossorigin/>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="twitter:site" content="@lichess" />
+  </head>
+  <body class="preload base brown Woodi light Basic      "
+    
+    
+    data-sound-set="standard"
+    data-socket-domain="socket.lichess.org"
+    data-asset-url="//lichess1.org"
+    data-asset-version="8O6y3E"
+     data-nonce="nRdFoRlLkkwcRUpN59FI" 
+    >
+    <form id="blind_mode" action="/toggle-blind-mode" method="POST"><input type="hidden" name="enable" value="1" /><input type="hidden" name="redirect" value="/games/search" /><button type="submit">Accessibility: Enable blind mode</button></form>
+    <div id="site_description">Free online Chess server. Play Chess now in a clean interface. No registration, no ads, no plugin required. Play Chess with the computer, friends or random opponents.</div>
+    
+    
+    
+    
+    
+    <div id="top" class="is2d">
+      
+
+<div id="topmenu" class="hover">
+  <section>
+    <a href="/">Play</a>
+    <div>
+      <a href="/?any#hook">Create a game</a>
+      <a href="/tournament">Tournament</a>
+      <a href="/simul">Simultaneous exhibitions</a>
+    </div>
+  </section>
+  <section>
+    <a href="/training">Learn</a>
+    <div>
+      <a href="/learn">Chess basics</a>
+      <a href="/training">Puzzles</a>
+      <a href="/practice">Practice</a>
+      <a href="/training/coordinate">Coordinates</a>
+      <a href="/study">Study</a>
+      <a href="/coach">Coaches</a>
+    </div>
+  </section>
+  <section>
+    <a href="/tv">Watch</a>
+    <div>
+      <a href="/tv">Lichess TV</a>
+      <a href="/games">Current games</a>
+      <a href="/streamer">Streamers</a>
+      <a href="/broadcast">Broadcasts (beta)</a>
+      <a href="/video">Video library</a>
+    </div>
+  </section>
+  <section>
+    <a href="/player">Community</a>
+    <div>
+      <a href="/player">Players</a>
+      
+      <a href="/team">Teams</a>
+      <a href="/forum">Forum</a>
+      
+      <a href="/qa">Questions &amp; Answers</a>
+    </div>
+  </section>
+  <section>
+    <a href="/analysis">Tools</a>
+    <div>
+      <a href="/analysis">Analysis board</a>
+      <a href="/analysis#explorer">Opening explorer</a>
+      <a href="/editor">Board editor</a>
+      <a href="/paste">Import game</a>
+      <a href="/games/search">Advanced search</a>
+    </div>
+  </section>
+</div>
+
+      <div id="ham-plate" class="link hint--bottom" data-hint="Menu">
+        <div id="hamburger" data-icon="["></div>
+      </div>
+      
+      
+      <div class="dasher">
+        <a class="toggle anon">
+          <span class="hint--bottom-left" data-hint="Preferences">
+            <span data-icon="%"></span>
+          </span>
+        </a>
+        <div id="dasher_app" class="dropdown"></div>
+      </div>
+      <a href="/login?referrer=/games/search" class="signin button text">Sign in</a>
+      
+      
+      
+      
+      <div id="clinput"><a class="link"><span data-icon="y"></span></a><input spellcheck="false" placeholder="Search"/></div>
+      <a id="reconnecting" class="link text" data-icon="B">Reconnecting</a>
+    </div>
+    <div class="content is2d">
+      <div id="site_header">
+        <div id="notifications"></div>
+        <div class="board_left">
+          <h1>
+            <a id="site_title" href="/">lichess<span class="extension">.org</span></a>
+          </h1>
+          
+          
+          
+          
+        </div>
+        
+      </div>
+      <div id="lichess">
+        
+<div class="content_box no_padding">
+  <h1 class="title">Advanced search</h1>
+  <form rel="nofollow" class="search" action="/games/search" method="get"
+    data-req-winner=""
+    data-req-loser=""
+    data-req-white=""
+    data-req-black="">
+    
+    <table>
+      <tr>
+        <th>
+          <label>Players <span class="help" title="The name(s) of the player(s) you wish to search">(?)</span></label>
+        </th>
+        <td class="usernames">
+          <div class="half">
+
+<input  type="text" value="" name="players.a"
+
+
+
+
+/>
+</div>
+          <div class="half">
+
+<input  type="text" value="" name="players.b"
+
+
+
+
+/>
+</div>
+        </td>
+      </tr>
+      
+      
+      <tr class="whiteUser user_row none">
+        <th>
+          <label for="players_white">White</label>
+        </th>
+        <td class="single">
+          <select id="players_white" name="players.white">
+            <option class="blank" value=""></option>
+          </select>
+        </td>
+      </tr>
+      
+      
+      
+      <tr class="blackUser user_row none">
+        <th>
+          <label for="players_black">Black</label>
+        </th>
+        <td class="single">
+          <select id="players_black" name="players.black">
+            <option class="blank" value=""></option>
+          </select>
+        </td>
+      </tr>
+      
+      
+      <tr class="winner user_row none">
+        <th>
+          <label for="players_winner">Winner</label>
+        </th>
+        <td class="single">
+          <select id="players_winner" name="players.winner">
+            <option class="blank" value=""></option>
+          </select>
+        </td>
+      </tr>
+      <tr class="loser user_row none">
+        <th>
+          <label for="players_loser">Loser</label>
+        </th>
+        <td class="single">
+          <select id="players_loser" name="players.loser">
+            <option class="blank" value=""></option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Rating <span class="help" title="The average rating of both players">(?)</span></label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="ratingMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="800" >800 Rating</option>
+  
+  <option value="900" >900 Rating</option>
+  
+  <option value="1000" >1000 Rating</option>
+  
+  <option value="1100" >1100 Rating</option>
+  
+  <option value="1200" >1200 Rating</option>
+  
+  <option value="1300" >1300 Rating</option>
+  
+  <option value="1400" >1400 Rating</option>
+  
+  <option value="1500" >1500 Rating</option>
+  
+  <option value="1600" >1600 Rating</option>
+  
+  <option value="1700" >1700 Rating</option>
+  
+  <option value="1800" >1800 Rating</option>
+  
+  <option value="1900" >1900 Rating</option>
+  
+  <option value="2000" >2000 Rating</option>
+  
+  <option value="2100" >2100 Rating</option>
+  
+  <option value="2200" >2200 Rating</option>
+  
+  <option value="2300" >2300 Rating</option>
+  
+  <option value="2400" >2400 Rating</option>
+  
+  <option value="2500" >2500 Rating</option>
+  
+  <option value="2600" >2600 Rating</option>
+  
+  <option value="2700" >2700 Rating</option>
+  
+  <option value="2800" >2800 Rating</option>
+  
+  <option value="2900" >2900 Rating</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="ratingMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="800" >800 Rating</option>
+  
+  <option value="900" >900 Rating</option>
+  
+  <option value="1000" >1000 Rating</option>
+  
+  <option value="1100" >1100 Rating</option>
+  
+  <option value="1200" >1200 Rating</option>
+  
+  <option value="1300" >1300 Rating</option>
+  
+  <option value="1400" >1400 Rating</option>
+  
+  <option value="1500" >1500 Rating</option>
+  
+  <option value="1600" >1600 Rating</option>
+  
+  <option value="1700" >1700 Rating</option>
+  
+  <option value="1800" >1800 Rating</option>
+  
+  <option value="1900" >1900 Rating</option>
+  
+  <option value="2000" >2000 Rating</option>
+  
+  <option value="2100" >2100 Rating</option>
+  
+  <option value="2200" >2200 Rating</option>
+  
+  <option value="2300" >2300 Rating</option>
+  
+  <option value="2400" >2400 Rating</option>
+  
+  <option value="2500" >2500 Rating</option>
+  
+  <option value="2600" >2600 Rating</option>
+  
+  <option value="2700" >2700 Rating</option>
+  
+  <option value="2800" >2800 Rating</option>
+  
+  <option value="2900" >2900 Rating</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="hasAi">Opponent <span class="help" title="Whether the player's opponent was a human or a computer">(?)</span></label>
+        </th>
+        <td class="single opponent">
+          
+
+<select name="hasAi">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >Human opponent</option>
+  
+  <option value="1" selected>Computer opponent</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr class="aiLevel none">
+        <th>
+          <label for="aiLevel">A.I. level</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="aiLevelMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >level 1</option>
+  
+  <option value="2" >level 2</option>
+  
+  <option value="3" >level 3</option>
+  
+  <option value="4" >level 4</option>
+  
+  <option value="5" selected>level 5</option>
+  
+  <option value="6" >level 6</option>
+  
+  <option value="7" >level 7</option>
+  
+  <option value="8" >level 8</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="aiLevelMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >level 1</option>
+  
+  <option value="2" >level 2</option>
+  
+  <option value="3" >level 3</option>
+  
+  <option value="4" >level 4</option>
+  
+  <option value="5" selected>level 5</option>
+  
+  <option value="6" >level 6</option>
+  
+  <option value="7" >level 7</option>
+  
+  <option value="8" >level 8</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="source">Source</label>
+        </th>
+        <td class="single">
+          
+
+<select name="source">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >Lobby</option>
+  
+  <option value="2" >Friend</option>
+  
+  <option value="3" >Ai</option>
+  
+  <option value="6" >Position</option>
+  
+  <option value="7" >Import</option>
+  
+  <option value="5" >Tournament</option>
+  
+  <option value="10" >Simul</option>
+  
+  <option value="12" >Pool</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="perf">Variant</label>
+        </th>
+        <td class="single">
+          
+
+<select name="perf">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >UltraBullet</option>
+  
+  <option value="1" >Bullet</option>
+  
+  <option value="2" >Blitz</option>
+  
+  <option value="6" >Rapid</option>
+  
+  <option value="3" selected>Classical</option>
+  
+  <option value="4" >Correspondence</option>
+  
+  <option value="18" >Crazyhouse</option>
+  
+  <option value="11" >Chess960</option>
+  
+  <option value="12" >King of the Hill</option>
+  
+  <option value="15" >Three-check</option>
+  
+  <option value="13" >Antichess</option>
+  
+  <option value="14" >Atomic</option>
+  
+  <option value="16" >Horde</option>
+  
+  <option value="17" >Racing Kings</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="mode">Mode</label>
+        </th>
+        <td class="single">
+          
+
+<select name="mode">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >Casual</option>
+  
+  <option value="1" >Rated</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Number of turns</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="turnsMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >1 move</option>
+  
+  <option value="2" >2 moves</option>
+  
+  <option value="3" >3 moves</option>
+  
+  <option value="4" >4 moves</option>
+  
+  <option value="5" >5 moves</option>
+  
+  <option value="10" >10 moves</option>
+  
+  <option value="15" >15 moves</option>
+  
+  <option value="20" >20 moves</option>
+  
+  <option value="25" >25 moves</option>
+  
+  <option value="30" >30 moves</option>
+  
+  <option value="35" >35 moves</option>
+  
+  <option value="40" >40 moves</option>
+  
+  <option value="45" >45 moves</option>
+  
+  <option value="50" >50 moves</option>
+  
+  <option value="60" >60 moves</option>
+  
+  <option value="70" >70 moves</option>
+  
+  <option value="80" >80 moves</option>
+  
+  <option value="90" >90 moves</option>
+  
+  <option value="100" >100 moves</option>
+  
+  <option value="125" >125 moves</option>
+  
+  <option value="150" >150 moves</option>
+  
+  <option value="175" >175 moves</option>
+  
+  <option value="200" >200 moves</option>
+  
+  <option value="225" >225 moves</option>
+  
+  <option value="250" >250 moves</option>
+  
+  <option value="275" >275 moves</option>
+  
+  <option value="300" >300 moves</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="turnsMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >1 move</option>
+  
+  <option value="2" >2 moves</option>
+  
+  <option value="3" >3 moves</option>
+  
+  <option value="4" >4 moves</option>
+  
+  <option value="5" >5 moves</option>
+  
+  <option value="10" >10 moves</option>
+  
+  <option value="15" >15 moves</option>
+  
+  <option value="20" >20 moves</option>
+  
+  <option value="25" >25 moves</option>
+  
+  <option value="30" >30 moves</option>
+  
+  <option value="35" >35 moves</option>
+  
+  <option value="40" >40 moves</option>
+  
+  <option value="45" >45 moves</option>
+  
+  <option value="50" >50 moves</option>
+  
+  <option value="60" >60 moves</option>
+  
+  <option value="70" >70 moves</option>
+  
+  <option value="80" >80 moves</option>
+  
+  <option value="90" >90 moves</option>
+  
+  <option value="100" >100 moves</option>
+  
+  <option value="125" >125 moves</option>
+  
+  <option value="150" >150 moves</option>
+  
+  <option value="175" >175 moves</option>
+  
+  <option value="200" >200 moves</option>
+  
+  <option value="225" >225 moves</option>
+  
+  <option value="250" >250 moves</option>
+  
+  <option value="275" >275 moves</option>
+  
+  <option value="300" >300 moves</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Duration</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="durationMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="60" >1 minute</option>
+  
+  <option value="120" >2 minutes</option>
+  
+  <option value="180" >3 minutes</option>
+  
+  <option value="300" >5 minutes</option>
+  
+  <option value="600" >10 minutes</option>
+  
+  <option value="900" >15 minutes</option>
+  
+  <option value="1200" >20 minutes</option>
+  
+  <option value="1800" >30 minutes</option>
+  
+  <option value="3600" >One hour</option>
+  
+  <option value="7200" >Two hours</option>
+  
+  <option value="10800" >Three hours</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="durationMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="60" >1 minute</option>
+  
+  <option value="120" >2 minutes</option>
+  
+  <option value="180" >3 minutes</option>
+  
+  <option value="300" >5 minutes</option>
+  
+  <option value="600" >10 minutes</option>
+  
+  <option value="900" >15 minutes</option>
+  
+  <option value="1200" >20 minutes</option>
+  
+  <option value="1800" >30 minutes</option>
+  
+  <option value="3600" >One hour</option>
+  
+  <option value="7200" >Two hours</option>
+  
+  <option value="10800" >Three hours</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Clock initial time</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="clock.initMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >0 seconds</option>
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="45" >45 seconds</option>
+  
+  <option value="60" >1 minute</option>
+  
+  <option value="120" >2 minutes</option>
+  
+  <option value="180" >3 minutes</option>
+  
+  <option value="300" >5 minutes</option>
+  
+  <option value="600" >10 minutes</option>
+  
+  <option value="900" >15 minutes</option>
+  
+  <option value="1200" >20 minutes</option>
+  
+  <option value="1800" >30 minutes</option>
+  
+  <option value="2700" >45 minutes</option>
+  
+  <option value="3600" >60 minutes</option>
+  
+  <option value="5400" >90 minutes</option>
+  
+  <option value="7200" >120 minutes</option>
+  
+  <option value="9000" >150 minutes</option>
+  
+  <option value="10800" >180 minutes</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="clock.initMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >0 seconds</option>
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="45" >45 seconds</option>
+  
+  <option value="60" >1 minute</option>
+  
+  <option value="120" >2 minutes</option>
+  
+  <option value="180" >3 minutes</option>
+  
+  <option value="300" >5 minutes</option>
+  
+  <option value="600" >10 minutes</option>
+  
+  <option value="900" >15 minutes</option>
+  
+  <option value="1200" >20 minutes</option>
+  
+  <option value="1800" >30 minutes</option>
+  
+  <option value="2700" >45 minutes</option>
+  
+  <option value="3600" >60 minutes</option>
+  
+  <option value="5400" >90 minutes</option>
+  
+  <option value="7200" >120 minutes</option>
+  
+  <option value="9000" >150 minutes</option>
+  
+  <option value="10800" >180 minutes</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Clock increment</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="clock.incMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >0 seconds</option>
+  
+  <option value="1" >1 second</option>
+  
+  <option value="2" >2 seconds</option>
+  
+  <option value="3" >3 seconds</option>
+  
+  <option value="5" >5 seconds</option>
+  
+  <option value="10" >10 seconds</option>
+  
+  <option value="15" >15 seconds</option>
+  
+  <option value="20" >20 seconds</option>
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="45" >45 seconds</option>
+  
+  <option value="60" >60 seconds</option>
+  
+  <option value="90" >90 seconds</option>
+  
+  <option value="120" >120 seconds</option>
+  
+  <option value="150" >150 seconds</option>
+  
+  <option value="180" >180 seconds</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="clock.incMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="0" >0 seconds</option>
+  
+  <option value="1" >1 second</option>
+  
+  <option value="2" >2 seconds</option>
+  
+  <option value="3" >3 seconds</option>
+  
+  <option value="5" >5 seconds</option>
+  
+  <option value="10" >10 seconds</option>
+  
+  <option value="15" >15 seconds</option>
+  
+  <option value="20" >20 seconds</option>
+  
+  <option value="30" >30 seconds</option>
+  
+  <option value="45" >45 seconds</option>
+  
+  <option value="60" >60 seconds</option>
+  
+  <option value="90" >90 seconds</option>
+  
+  <option value="120" >120 seconds</option>
+  
+  <option value="150" >150 seconds</option>
+  
+  <option value="180" >180 seconds</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="status">Result</label>
+        </th>
+        <td class="single">
+          
+
+<select name="status">
+  
+  <option value=""></option>
+  
+  
+  <option value="30" >Mate</option>
+  
+  <option value="31" >Resign</option>
+  
+  <option value="32" >Stalemate</option>
+  
+  <option value="34" >Draw</option>
+  
+  <option value="35" >Clock Flag</option>
+  
+  <option value="60" >Variant End</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="winnerColor">Winner color</label>
+        </th>
+        <td class="single">
+          
+
+<select name="winnerColor">
+  
+  <option value=""></option>
+  
+  
+  <option value="1" >White</option>
+  
+  <option value="2" >Black</option>
+  
+  <option value="3" >None</option>
+  
+</select>
+
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Date</label>
+        </th>
+        <td>
+          <div class="half">From 
+
+<select name="dateMin">
+  
+  <option value=""></option>
+  
+  
+  <option value="0d" >Now</option>
+  
+  <option value="1h" >1 hour ago</option>
+  
+  <option value="2h" >2 hours ago</option>
+  
+  <option value="6h" >6 hours ago</option>
+  
+  <option value="1d" >1 day ago</option>
+  
+  <option value="2d" >2 days ago</option>
+  
+  <option value="3d" >3 days ago</option>
+  
+  <option value="4d" >4 days ago</option>
+  
+  <option value="5d" >5 days ago</option>
+  
+  <option value="6d" >6 days ago</option>
+  
+  <option value="1w" >1 week ago</option>
+  
+  <option value="2w" >2 weeks ago</option>
+  
+  <option value="3w" >3 weeks ago</option>
+  
+  <option value="1m" >1 month ago</option>
+  
+  <option value="2m" >2 months ago</option>
+  
+  <option value="3m" >3 months ago</option>
+  
+  <option value="4m" >4 months ago</option>
+  
+  <option value="5m" >5 months ago</option>
+  
+  <option value="6m" >6 months ago</option>
+  
+  <option value="1y" >1 year ago</option>
+  
+  <option value="2y" >2 years ago</option>
+  
+  <option value="3y" >3 years ago</option>
+  
+  <option value="4y" >4 years ago</option>
+  
+  <option value="5y" selected>5 years ago</option>
+  
+</select>
+</div>
+          <div class="half">To 
+
+<select name="dateMax">
+  
+  <option value=""></option>
+  
+  
+  <option value="0d" selected>Now</option>
+  
+  <option value="1h" >1 hour ago</option>
+  
+  <option value="2h" >2 hours ago</option>
+  
+  <option value="6h" >6 hours ago</option>
+  
+  <option value="1d" >1 day ago</option>
+  
+  <option value="2d" >2 days ago</option>
+  
+  <option value="3d" >3 days ago</option>
+  
+  <option value="4d" >4 days ago</option>
+  
+  <option value="5d" >5 days ago</option>
+  
+  <option value="6d" >6 days ago</option>
+  
+  <option value="1w" >1 week ago</option>
+  
+  <option value="2w" >2 weeks ago</option>
+  
+  <option value="3w" >3 weeks ago</option>
+  
+  <option value="1m" >1 month ago</option>
+  
+  <option value="2m" >2 months ago</option>
+  
+  <option value="3m" >3 months ago</option>
+  
+  <option value="4m" >4 months ago</option>
+  
+  <option value="5m" >5 months ago</option>
+  
+  <option value="6m" >6 months ago</option>
+  
+  <option value="1y" >1 year ago</option>
+  
+  <option value="2y" >2 years ago</option>
+  
+  <option value="3y" >3 years ago</option>
+  
+  <option value="4y" >4 years ago</option>
+  
+  <option value="5y" >5 years ago</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label>Sort</label>
+        </th>
+        <td>
+          <div class="half">By 
+
+<select name="sort.field">
+  
+  
+  <option value="d" selected>Date</option>
+  
+  <option value="t" >Moves</option>
+  
+  <option value="a" >Rating</option>
+  
+</select>
+</div>
+          <div class="half">
+
+<select name="sort.order">
+  
+  
+  <option value="desc" selected>Descending</option>
+  
+  <option value="asc" >Ascending</option>
+  
+</select>
+</div>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="analysed">Analysis <span class="help" title="Whether computer analysis is available or not">(?)</span></label>
+        </th>
+        <td class="single">
+          
+
+<label>
+  
+  <input type="checkbox" id="analysed" name="analysed" value="1"  />
+</label>
+
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <td class="simple action">
+          <button type="submit" class="submit button">Search</button>
+          <div class="wait">
+            
+<div class="spinner"><svg viewBox="0 0 40 40"><circle cx=20 cy=20 r=18 fill="none"></circle></svg></div>
+
+            Searching in 957,716,386 games
+          </div>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <div class="search_result">
+    
+    
+    <div class="search_status">
+      <strong>675,217 games found</strong> •
+      <a class="permalink" href="/games/search">Permalink</a> •
+    </div>
+    <div class="search_infinitescroll">
+      
+      <div class="pager none"><a rel="next" href="/games/search?page=6">Next</a></div>
+      
+      
+
+
+
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/JILCBW7n"  class="mini_board mini_board_JILCBW7n parse_fen is2d  standard" data-live="" data-color="white" data-fen="8/7k/p1p2pp1/1p1p1p2/1P1r1P2/P5KP/2P3P1/8" data-lastmove="e4d4"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/JILCBW7n"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        150+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:48:20.924Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  <a class="user_link ulpt" href="/@/ganesh35">ganesh35</a>
+  <br />
+  
+  1500?
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        White resigned, Black is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">D01 Richter-Veresov Attack</div>
+    
+    
+    <div class="pgn">1. d4 Nf6 2. Nc3 d5 3. Bg5 Bg4 ... 32 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/BJtwCMsm"  class="mini_board mini_board_BJtwCMsm parse_fen is2d  standard" data-live="" data-color="white" data-fen="8/8/3Q1Rpp/4k3/1P6/3Bp1P1/5PP1/6K1" data-lastmove="d8d6"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/BJtwCMsm"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        5+30
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:44:51.281Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  <a class="user_link ulpt" href="/@/Biancoazzurro">Biancoazzurro</a>
+  <br />
+  
+  2156
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Checkmate, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">D00 Queen&#x27;s Pawn Game: Mason Attack</div>
+    
+    
+    <div class="pgn">1. d4 d5 2. Bf4 c6 3. e3 Qb6 ... 50 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/JE7Cc992/black"  class="mini_board mini_board_JE7Cc992 parse_fen is2d  standard" data-live="" data-color="black" data-fen="3k1b2/5p1p/p1R1p3/1p2P3/8/3P1p2/PP1q2rP/6KR" data-lastmove="g8g2"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/JE7Cc992/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        60+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:35:52.553Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span><span class="anon">Anonymous</span></span>
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Time out, Black is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">B01 Scandinavian Defense</div>
+    
+    
+    <div class="pgn">1. e4 d5 2. e5 d4 3. f4 Bf5 ... 25 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/CENrhTU4"  class="mini_board mini_board_CENrhTU4 parse_fen is2d  standard" data-live="" data-color="white" data-fen="8/8/1k6/8/8/8/5K2/8" data-lastmove="g1f2"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/CENrhTU4"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        180+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:31:06.494Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span><span class="anon">Anonymous</span></span>
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Draw
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">C41 Philidor Defense: Exchange Variation</div>
+    
+    
+    <div class="pgn">1. e4 e5 2. Nf3 d6 3. d4 exd4 ... 73 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/MesMT03M/black"  class="mini_board mini_board_MesMT03M parse_fen is2d  standard" data-live="" data-color="black" data-fen="5R2/2k5/8/P1PK1p2/3p4/3P4/3n4/8" data-lastmove="f3d2"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/MesMT03M/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        150+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:39:37.600Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  <a class="user_link ulpt" href="/@/ganesh35">ganesh35</a>
+  <br />
+  
+  1500?
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Black resigned, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">C00 French Defense: Queen&#x27;s Knight</div>
+    
+    
+    <div class="pgn">1. e4 e6 2. Nc3 Nf6 3. d4 Bb4 ... 56 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/2d3ofWIV/black"  class="mini_board mini_board_2d3ofWIV parse_fen is2d  standard" data-live="" data-color="black" data-fen="r5kQ/pbr2pp1/1p1p1qN1/1P2p1p1/2B1P3/3P3P/2P2PP1/R4RK1" data-lastmove="h5h8"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/2d3ofWIV/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        45+1
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:20:39.261Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  <a class="user_link ulpt" href="/@/paulTheFisher8">paulTheFisher8</a>
+  <br />
+  
+  1370
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Checkmate, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">C27 Vienna Game</div>
+    
+    
+    <div class="pgn">1. e4 e5 2. Nc3 c5 3. Nf3 Nc6 ... 26 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/x0zd1Z7F/black"  class="mini_board mini_board_x0zd1Z7F parse_fen is2d  standard" data-live="" data-color="black" data-fen="r2r4/ppq1b1k1/2p2p1p/4PQpP/2P2p2/5N2/PP3PP1/R3R1K1" data-lastmove="h4h5"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/x0zd1Z7F/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        5+30
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:41:58.700Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  <a class="user_link ulpt" href="/@/Biancoazzurro">Biancoazzurro</a>
+  <br />
+  
+  2156
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Black resigned, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">B07 Pirc Defense</div>
+    
+    
+    <div class="pgn">1. e4 d6 2. d4 Nf6 3. Nd2 e5 ... 23 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/tXW30VGx/black"  class="mini_board mini_board_tXW30VGx parse_fen is2d  standard" data-live="" data-color="black" data-fen="2rq1b2/1p2k1r1/p2pQpB1/2pPn3/5B2/8/PPP2PPP/R3R1K1" data-lastmove="g4e6"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/tXW30VGx/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        180+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:32:59.424Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span><span class="anon">Anonymous</span></span>
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Checkmate, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">B21 Sicilian Defense: Smith-Morra Gambit</div>
+    
+    
+    <div class="pgn">1. e4 c5 2. d4 e5 3. dxe5 Nc6 ... 21 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/QUZMEs9w/black"  class="mini_board mini_board_QUZMEs9w parse_fen is2d  standard" data-live="" data-color="black" data-fen="5rk1/p3b1pp/1qpp4/4p1N1/1pP4P/1P1Pr1Pb/P2Q1K2/RN4R1" data-lastmove="f5h3"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/QUZMEs9w/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        30+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:29:22.395Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span><span class="anon">Anonymous</span></span>
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Time out, Black is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">C20 King&#x27;s Pawn Game: Leonardis Variation</div>
+    
+    
+    <div class="pgn">1. e4 e5 2. d3 Nf6 3. Nf3 Nc6 ... 26 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/9BZAmI2p/black"  class="mini_board mini_board_9BZAmI2p parse_fen is2d  standard" data-live="" data-color="black" data-fen="r2qkbnr/p1p2ppp/2p5/3pp3/4P1b1/P4N2/1PP1QPPP/RNB1KB1R" data-lastmove="d1e2"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/9BZAmI2p/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        180+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:39:34.977Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  <a class="user_link ulpt" href="/@/dovahkiin1">dovahkiin1</a>
+  <br />
+  
+  1203?
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Black resigned, White is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">C44 Scotch Game</div>
+    
+    
+    <div class="pgn">1. e4 e5 2. Nf3 Nc6 3. d4 d6 ... 7 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/2LY5mY0M/black"  class="mini_board mini_board_2LY5mY0M parse_fen is2d  standard" data-live="" data-color="black" data-fen="r1b1kb1r/pp4p1/3pn2p/3N4/3Q4/8/PPP2PPP/R1B1q1K1" data-lastmove="a5e1"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/2LY5mY0M/black"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        180+0
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:29:14.965Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  
+  <span><span class="anon">Anonymous</span></span>
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Checkmate, Black is victorious 
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">B07 Pirc Defense</div>
+    
+    
+    <div class="pgn">1. e4 d6 2. Nf3 Nd7 3. d4 Ngf6 ... 14 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+<div class="game_row paginated_element">
+  
+  
+  <a href="/gSukBGUD"  class="mini_board mini_board_gSukBGUD parse_fen is2d  standard" data-live="" data-color="white" data-fen="5k2/8/4QK2/7p/7P/8/8/8" data-lastmove="e5f6"><div class="cg-board-wrap"><div class="cg-board"></div></div></a>
+  <a class="game_link_overlay" href="/gSukBGUD"></a>
+  <div class="infos" data-icon="
+n
+">
+    <div class="header">
+      <strong>
+        
+        15+15
+        • Classical
+        • Casual
+        
+      </strong>
+      <time class="timeago" datetime="2018-11-02T21:18:02.656Z"></time>
+      
+      
+    </div>
+    <div class="versus">
+      
+<div class="player white">
+  
+  <a class="user_link ulpt" href="/@/jason443280">jason443280</a>
+  <br />
+  
+  1951?
+  
+  
+</div>
+
+      <div class="swords" data-icon="U"></div>
+      
+<div class="player black">
+  
+  
+  <span>Stockfish AI level 5</span><br />1700
+  
+  
+</div>
+
+    </div>
+    <div class="result">
+      
+      
+      <span class="">
+        Stalemate
+      </span>
+      
+      
+    </div>
+    
+    
+    
+    
+    <div class="opening">B00 Nimzowitsch Defense, Declined Variation</div>
+    
+    
+    <div class="pgn">1. e4 Nc6 2. Nf3 d5 3. exd5 Qxd5 ... 52 moves 
+    </div>
+    
+    
+    <div class="metadata">
+      
+      
+    </div>
+  </div>
+  
+  
+</div>
+
+
+    </div>
+    
+    
+  </div>
+</div>
+
+      </div>
+    </div>
+    
+    <script src="//lichess1.org/assets/_8O6y3E/javascripts/vendor/chessground.min.js"></script>
+    
+    <script src="//lichess1.org/assets/_8O6y3E/compiled/lichess.site.min.js"></script>
+    
+<script src="//lichess1.org/assets/_8O6y3E/javascripts/search.js"></script>
+<script src="//lichess1.org/assets/_8ccUFg/javascripts/vendor/jquery.infinitescroll.min.js"></script>
+
+    <script nonce="nRdFoRlLkkwcRUpN59FI">lichess.quantity=function(c) {return c == 1 ? 'one' : 'other';};(function(){lichess.timeagoLocale=function(s,n){return[["just now","right now"],["%s seconds ago","in %s seconds"],["1 minute ago","in 1 minute"],["%s minutes ago","in %s minutes"],["1 hour ago","in 1 hour"],["%s hours ago","in %s hours"],["1 day ago","in 1 day"],["%s days ago","in %s days"],["1 week ago","in 1 week"],["%s weeks ago","in %s weeks"],["1 month ago","in 1 month"],["%s months ago","in %s months"],["1 year ago","in 1 year"],["%s years ago","in %s years"]][n]};
+})();</script>
+    
+  </body>
+</html>
+
