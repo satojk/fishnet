@@ -1,0 +1,20 @@
+[Event "Casual Classical game"]
+[Site "https://lichess.org/KeaUF5g0"]
+[Date "2018.11.02"]
+[Round "-"]
+[White "lichess AI level 5"]
+[Black "romaaaan"]
+[Result "1-0"]
+[UTCDate "2018.11.02"]
+[UTCTime "19:34:36"]
+[WhiteElo "?"]
+[BlackElo "1468"]
+[Variant "Standard"]
+[TimeControl "10800+0"]
+[ECO "A40"]
+[Opening "Queen's Pawn"]
+[Termination "Normal"]
+
+1. d4 c6 2. Nc3 d5 3. Nf3 Nf6 4. Ne5 Bf5 5. h3 h6 6. Rb1 b5 7. b4 a5 8. e4 axb4 9. exf5 bxc3 10. Be2 Rxa2 11. Rb3 Ra1 12. Nf3 Ne4 13. Ne5 f6 14. Bh5+ g6 15. Bxg6# 1-0
+
+
