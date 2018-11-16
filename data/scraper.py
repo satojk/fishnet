@@ -1,10 +1,11 @@
 import pickle
 import requests
+from time import sleep
 from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-__BASE_URL = 'https://lichess.org/games/search?page=XXXXX&hasAI=1&aiLevelMin=5&aiLevelMax=5&perf=3&sort.field=d&sort.order=desc&_=YYYYY'
+__BASE_URL = 'https://lichess.org/games/search?page=XXXXX&hasAi=1&aiLevelMin=5&aiLevelMax=5&perf=3&sort.field=d&sort.order=desc&_=YYYYY'
 
 _BASE_PAGE_NO = 2
 _BASE_PAGE_ID = 1541890166213
@@ -157,6 +158,7 @@ def main():
     first_request = None
     last_request = None
     for i in range(_NUM_PAGES_TO_SCRAPE):
+        print('Scraping for the {}th time'.format(i))
         url = __BASE_URL.replace('XXXXX', str(page_no))
         url = url.replace('YYYYY', str(page_id))
         if _VERBOSE:
@@ -168,6 +170,7 @@ def main():
         extract_game_ids_from_page(scraping_session, page, game_ids)
         page_no += 1
         page_id += 1
+        sleep(7)
     update_page_requests(scraping_session, first_request, last_request)
     update_game_ids(game_ids)
     update_scraping_session(scraping_session+1)

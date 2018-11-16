@@ -1,3 +1,14 @@
+Two scripts in this directory: scraper.py and pgn_generator.py
+
+The first one hits Lichess's search endpoint with our filters (Stockfish Level 
+5, etc) and populates game_ids.pkl.
+
+The second one takes game_ids.pkl and hits Lichess's export endpoint and 
+generates a games.pgn file, containing the pgn for each game_id in 
+game_ids.pkl.
+
+Plan:
+
 `example_requests` give a few examples of the GET requests sent when scrolling
 down the search result page. We can get expected responses without providing
 any headers, it seems (not even cookies).
@@ -23,3 +34,4 @@ square brackets, where each piece of information follows the format [KEY]
 [WHITESPACE] "[VALUE]" (eg: [Date "2018.11.02"] is a row), followed by a blank
 line, followed by a line containing the algebraic notation of the game (this is
 the 18th line in the example file), followed by two blank lines.
+

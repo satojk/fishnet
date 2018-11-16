@@ -1,0 +1,20 @@
+[Event "Casual Classical game"]
+[Site "https://lichess.org/EK27P0ht"]
+[Date "2018.11.11"]
+[Round "-"]
+[White "lichess AI level 5"]
+[Black "ravnaz"]
+[Result "0-1"]
+[UTCDate "2018.11.11"]
+[UTCTime "17:09:18"]
+[WhiteElo "?"]
+[BlackElo "1500"]
+[Variant "Standard"]
+[TimeControl "1500+0"]
+[ECO "C41"]
+[Opening "Philidor Defense: Exchange Variation"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d6 3. d4 exd4 4. Bg5 f6 5. Bd2 c5 6. c3 dxc3 7. Bxc3 Bg4 8. Qd5 Qc7 9. h3 Bxf3 10. gxf3 Ne7 11. Qh5+ Ng6 12. Rg1 Qf7 13. f4 Nxf4 14. Qg4 Ne6 15. Bb5+ Nd7 16. Bc4 Ke7 17. f4 h5 18. Qe2 Qe8 19. Bxe6 Kxe6 20. Nd2 Nb6 21. f5+ Kd7 22. Ba5 Qe5 23. Bc3 Qe8 24. O-O-O Rd8 25. Ba5 Kc8 26. Nc4 Qc6 27. h4 Rd7 28. Na3 Na8 29. b3 b6 30. Nc4 bxa5 31. Nxa5 Qb6 32. Qe1 Nc7 33. Kb2 Nb5 34. Kb1 Nd4 35. Nc4 Qb5 36. Rd3 Kc7 37. Rg2 Rg8 38. Qf2 Be7 39. Qe1 Bd8 40. Qd1 Rh8 41. Qd2 Kb8 42. Re3 a5 43. Qd1 Qc6 44. Qh1 Ra7 45. Qh2 Rd7 46. Ka1 a4 47. bxa4 Qxa4 48. Nb2 Qa6 49. a3 Ra7 50. Ka2 Nb5 51. Nc4 Qa4 52. Nb2 Qb4 53. Qg3 Qd4 54. Rb3 Rb7 55. Rc2 Bc7 56. Qxg7 Rc8 57. Qe7 Ba5 58. Rc4 Qd2 59. Qxf6 Bc3 60. Rbxc3 Nxc3+ 61. Qxc3 Qf2 62. e5 Qxf5 63. exd6 Qd5 64. d7 Qxd7 65. Qg3+ Qc7 66. Qxc7+ Rcxc7 67. Na4 Rb5 68. Nc3 Ra5 69. Re4 Kb7 70. a4 Kc6 71. Ka1 Rb7 72. Ka2 Rb4 73. Ka3 Rxe4 74. Nxe4 Ra8 75. Ng3 Rh8 76. Ka2 Kd5 77. a5 Kc4 78. Ka3 Kb5 79. Kb3 Kxa5 80. Kc4 Kb6 81. Kb3 Kb5 82. Ne4 Rd8 83. Nf6 Rh8 84. Nd5 Rh6 85. Nf4 Rh8 86. Kc3 Rh6 87. Kb3 c4+ 88. Kc2 Kb4 89. Kb2 c3+ 90. Kb1 Kb3 91. Ne2 Rf6 92. Nc1+ Kb4 93. Nd3+ Kc4 94. Kc2 Rf5 95. Ne1 Rf4 96. Kd1 Rxh4 97. Ng2 Re4 98. Ne1 h4 99. Nf3 h3 100. Nh2 Rd4+ 101. Ke1 c2 102. Kf2 c1=Q 103. Kg3 Qe3+ 104. Nf3 Rf4 105. Kxh3 Qxf3+ 106. Kh2 Rh4+ 107. Kg1 Qg3+ 108. Kf1 Rf4+ 109. Ke2 Rf2+ 110. Ke1 Qg1# 0-1
+
+
