@@ -63,6 +63,14 @@ class Game:
                 self.board.push(self.moves[i])
         return captures
 
+    def board_state(self, move_num):
+        self.go_to_move(move_num)
+        matrix = np.zeros((64, 2, 6), dtype = 'bool')
+        for location, piece in self.board.piece_map().items():
+            dimension2 = 0 if piece.color else 1
+            matrix[location][dimension2][piece.piece_type-1] = True
+        return matrix.flatten()
+
     def vectorize_moves(self):
         coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
         return pad(coords, 35 * 2 * 4) # 35 moves, 2 players, 4 coords
@@ -78,3 +86,4 @@ def pad(array, length):
     end = min(len(array), length)
     pad[:end] = array[:end]
     return pad
+
