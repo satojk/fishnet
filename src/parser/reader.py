@@ -2,57 +2,77 @@ import numpy as np
 import io
 import chess
 import chess.pgn
+import collections
 
 
 class Game:
-    def __init__(self, pgnText):
-        self.pgnText = pgnText
-        self.moves = [m for m in chess.pgn.read_game(io.StringIO(self.pgnText)).main_line()]
+    def __init__(self, pgn_text) :
+        self.pgn_text = pgn_text
+        self.moves = [m for m in chess.pgn.read_game(io.StringIO(self.pgn_text)).main_line()]
         self.board = chess.Board()
 
-    def aiPlayer(self):
-        lines = self.pgnText.split('\n')
+
+    def ai_player(self) :
+        lines = self.pgn_text.split('\n')
         if lines[4] == "[White \"lichess AI level 5\"]":
             return 0
         if lines[5] == "[Black \"lichess AI level 5\"]":
             return 1
         raise Exception("No AI players detected")
 
-    def turnNum(self):
+    def turn_num(self) :
         return len(self.board.move_stack)
     
-    def goToTurn(self, turn):
-        if self.turnNum() == turn:
+    def go_to_turn(self, turn) :
+        if self.turn_num() == turn :
             return
-        elif turn < 0 or turn > len(self.moves):
+        elif turn < 0 or turn > len(self.moves) :
             raise Exception("turn out of bounds in goToTurn")
-        elif self.turnNum() < turn :
-            for i in range(self.turnNum(), turn):
+        elif self.turn_num() < turn :
+            for i in range(self.turn_num(), turn) :
                 self.board.push(self.moves[i])
-        else:
-            for _ in range(self.turnNum() - turn):
+        else :
+            for _ in range(self.turn_num() - turn) :
                 self.board.pop()
  
-    def numPieces(self):
+    def num_pieces(self) :
         pieces = self.board.piece_map()
-        whiteNum = 0
-        for location, piece in pieces.items():
-            if piece.color == chess.WHITE:
-                whiteNum += 1
-        return (whiteNum, len(pieces.keys()) - whiteNum)
+        white_num = 0
+        for location, piece in pieces.items() :
+            if piece.color == chess.WHITE :
+                white_num += 1
+        return (white_num, len(pieces.keys()) - white_num)
 
-    def vectorizeMoves(self):
-        def toCoord(uci):
-            return [ord(uci[0]) - ord('a'), 
-                    int(uci[1]) - 1, 
-                    ord(uci[2]) - ord('a'), 
-                    int(uci[3]) - 1 ]
-
-        coords = np.array([toCoord(chess.Move.uci(m)) for m in self.moves])
+    def vectorize_moves(self):
+        def to_coord(uci):
+            return [ord(uci[0]) - ord('a'),
+                    int(uci[1]) - 1,
+                    ord(uci[2]) - ord('a'),
+                    int(uci[3]) - 1]
+        coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves])
         return coords.flatten()
 
+    def pieces_lost(self) :
+        self.go_to_turn(0)
+        captures = []
+        pieces = collections.defaultdict(int)
+        for location, piece in self.board.piece_map().items() :
+            pieces[piece] += 1
+        for i in range(len(self.moves)) :
+            if self.board.is_capture(self.moves[i]) :
+                self.board.push(self.moves[i])
+                new_pieces = collections.defaultdict(int)
+                for location, piece in self.board.piece_map().items() :
+                    new_pieces[piece] += 1
+                for piece, quantity in pieces.items() :
+                    if new_pieces[piece] < quantity :
+                        captures.append(piece.symbol())
+                pieces = new_pieces
+            else :
+                self.board.push(self.moves[i])
+        return captures
 
-with open('./data/samples/example_game.pgn', 'r') as myFile :
-    data = myFile.read()
+with open('.data/samples/example_game.pgn', 'r') as my_file :
+    data = my_file.read()
 
 Game(data).vectorizeMoves()
