@@ -10,8 +10,7 @@ _BASE_URL = 'https://lichess.org/game/export/XXXXX?evals=0&clocks=0'
 # GAME_IDS is a dictionary of GAME_ID -> SCRAPING_SESSION pairs
 _GAME_IDS_FILENAME = 'game_ids.pkl'
 
-# CONVERTED_GAME_IDS is a set of GAME_IDS which we already have the pgns for
-_CONVERTED_GAME_IDS_FILENAME = 'converted_game_ids.pkl'
+_RECONSTRUCTED_GAME_IDS_FILENAME = 'reconstructed_game_ids.pkl'
 
 # PGN is a large pgn file containing a bunch of games
 _PGN_FILENAME = 'games.pgn'
@@ -30,9 +29,9 @@ def load_game_ids():
 
 def update_reconstructed_game_ids(new_value):
     '''
-    Write a _CONVERTED_GAME_IDS_FILENAME file with new_value value
+    Write a _RECONSTRUCTED_GAME_IDS_FILENAME file with new_value value
     '''
-    with open(_CONVERTED_GAME_IDS_FILENAME, 'wb') as pkl:
+    with open(_RECONSTRUCTED_GAME_IDS_FILENAME, 'wb') as pkl:
         pickle.dump(new_value, pkl)
 
 
