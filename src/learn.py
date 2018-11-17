@@ -4,7 +4,7 @@ from parser.reader import Game
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
-_PGN_PATH_AND_FILENAME = 'data/games.pgn'
+_PGN_PATH_AND_FILENAME = './data/games.pgn'
 
 def load_games():
     with open(_PGN_PATH_AND_FILENAME, 'r') as f:
@@ -17,9 +17,17 @@ def extract_features(games):
     out = [[],[]]
     for game in games:
         game.goToTurn(len(game.moves))
-        out[0].append(game.numPieces())
-        out[1].append(game.aiPlayer())
-    return tuple(out)
+        out[0].append(game.num_pieces())
+        out[1].append(game.ai_player())
+    return map(np.array, out)
+
+
+def extract_coords(games):
+    out = [[],[]]
+    for game in games:
+        out[0].append(game.vectorize_moves())
+        out[1].append(game.ai_player())
+    return map(np.array, out)
 
 
 def dataset_split(X, y):
@@ -32,9 +40,8 @@ def dataset_split(X, y):
 
 def main():
     games = load_games()
-    X, y = extract_features(games)
-    X = np.array(X)
-    y = np.array(y)
+    X, y = extract_coords(games)
+    print(X)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     model = LogisticRegression().fit(X_train, y_train)
     print(model.score(X_test, y_test))

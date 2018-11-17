@@ -1,5 +1,5 @@
 .DS_Store
-.swp
+*.swp
 __pycache__/
 *.py[cod]
 *$py.class
