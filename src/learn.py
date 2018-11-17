@@ -13,19 +13,19 @@ def load_games():
     return [Game(pgn) for pgn in pgns]
 
 
-def extract_features(games):
-    out = [[],[]]
-    for game in games:
-        game.goToTurn(len(game.moves))
-        out[0].append(game.num_pieces())
-        out[1].append(game.ai_player())
-    return map(np.array, out)
+def extract_pieces(game):
+    game.go_to_turn(len(game.moves))
+    return game.num_pieces()
 
 
-def extract_coords(games):
+def extract_coords(game):
+    return game.vectorize_moves()
+
+
+def extract_features(games, extractor):
     out = [[],[]]
     for game in games:
-        out[0].append(game.vectorize_moves())
+        out[0].append(extractor(game))
         out[1].append(game.ai_player())
     return map(np.array, out)
 
@@ -40,8 +40,7 @@ def dataset_split(X, y):
 
 def main():
     games = load_games()
-    X, y = extract_coords(games)
-    print(X)
+    X, y = extract_features(games, extract_pieces)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     model = LogisticRegression().fit(X_train, y_train)
     print(model.score(X_test, y_test))
@@ -49,6 +48,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# g = Game(data)
-# print(g.aiPlayer())
