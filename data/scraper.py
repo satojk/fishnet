@@ -145,7 +145,7 @@ def extract_game_ids_from_page(scraping_session, page, game_ids):
     game_row_elements = soup.find_all('div',
                                       class_='game_row paginated_element')
     for game_row_element in game_row_elements:
-        next_game_id = game_row_element.find('a')['href'].strip('/black')
+        next_game_id = game_row_element.find('a')['href'].replace('/black', '')
         print('Next game id: {}'.format(next_game_id))
         game_ids[next_game_id] = scraping_session
 
