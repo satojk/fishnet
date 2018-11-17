@@ -1,6 +1,7 @@
 import numpy as np
 from time import sleep
 from parser.reader import Game
+from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
@@ -40,10 +41,22 @@ def dataset_split(X, y):
 
 def main():
     games = load_games()
-    X, y = extract_features(games, extract_pieces)
+    X, y = extract_features(games, extract_coords)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
-    model = LogisticRegression().fit(X_train, y_train)
-    print(model.score(X_test, y_test))
+
+    C = 1.0  # SVM regularization parameter
+    models = [
+            ["Log-Reg: ",    LogisticRegression()],
+            ["SVM Linear: ", svm.SVC(kernel='linear', C=C)],
+            ["SVM RBF: ",    svm.SVC(kernel='rbf', gamma=0.7, C=C)],
+            ["SVM Poly:",  svm.SVC(kernel='poly', degree=3, C=C)],
+            ]
+
+    for name, clf in models:
+        clf.fit(X_train, y_train)
+        print(name)
+        print("Train: ", clf.score(X_train, y_train))
+        print("Test: ", clf.score(X_test, y_test))
 
 
 if __name__ == '__main__':
