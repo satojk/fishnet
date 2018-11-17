@@ -43,15 +43,6 @@ class Game:
                 white_num += 1
         return (white_num, len(pieces.keys()) - white_num)
 
-    def vectorize_moves(self):
-        def to_coord(uci):
-            return [ord(uci[0]) - ord('a'),
-                    int(uci[1]) - 1,
-                    ord(uci[2]) - ord('a'),
-                    int(uci[3]) - 1]
-        coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves])
-        return coords.flatten()
-
     def pieces_lost(self) :
         self.go_to_turn(0)
         captures = []
@@ -72,7 +63,18 @@ class Game:
                 self.board.push(self.moves[i])
         return captures
 
-with open('.data/samples/example_game.pgn', 'r') as my_file :
-    data = my_file.read()
+    def vectorize_moves(self):
+        coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
+        return pad(coords, 35 * 2 * 4) # 35 turns, 2 players, 4 coords
 
-Game(data).vectorizeMoves()
+def to_coord(uci):
+    return [ord(uci[0]) - ord('a'), 
+            int(uci[1]) - 1, 
+            ord(uci[2]) - ord('a'), 
+            int(uci[3]) - 1 ]
+
+def pad(array, length):
+    pad = np.zeros(length)
+    end = min(len(array), length)
+    pad[:end] = array[:end]
+    return pad
