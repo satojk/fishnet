@@ -1,3 +1,4 @@
+import numpy as np
 import io
 import chess
 import chess.pgn
@@ -23,9 +24,9 @@ class Game:
     def goToTurn(self, turn):
         if self.turnNum() == turn:
             return
-        if turn < 0 or turn > len(self.moves):
+        elif turn < 0 or turn > len(self.moves):
             raise Exception("turn out of bounds in goToTurn")
-        if self.turnNum() < turn :
+        elif self.turnNum() < turn :
             for i in range(self.turnNum(), turn):
                 self.board.push(self.moves[i])
         else:
@@ -40,14 +41,18 @@ class Game:
                 whiteNum += 1
         return (whiteNum, len(pieces.keys()) - whiteNum)
 
-    def vectorizeGrid(self):
+    def vectorizeMoves(self):
+        def toCoord(uci):
+            return [ord(uci[0]) - ord('a'), 
+                    int(uci[1]) - 1, 
+                    ord(uci[2]) - ord('a'), 
+                    int(uci[3]) - 1 ]
+
+        coords = np.array([toCoord(chess.Move.uci(m)) for m in self.moves])
+        return coords.flatten()
 
 
+with open('./data/samples/example_game.pgn', 'r') as myFile :
+    data = myFile.read()
 
-# with open('./data/samples/example_game.pgn', 'r') as myFile :
-#     data = myFile.read()
-
-# game1 = Game(data)
-# game1.goToTurn(len(game1.moves))
-# print(game1.numPieces())
-# print(game1.aiPlayer())
+Game(data).vectorizeMoves()
