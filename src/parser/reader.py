@@ -20,19 +20,19 @@ class Game:
             return 1
         raise Exception("No AI players detected")
 
-    def turn_num(self) :
+    def move_num(self) :
         return len(self.board.move_stack)
     
-    def go_to_turn(self, turn) :
-        if self.turn_num() == turn :
+    def go_to_move(self, move) :
+        if self.move_num() == move :
             return
-        elif turn < 0 or turn > len(self.moves) :
+        elif move < 0 or move > len(self.moves) :
             raise Exception("turn out of bounds in goToTurn")
-        elif self.turn_num() < turn :
-            for i in range(self.turn_num(), turn) :
+        elif self.move_num() < move :
+            for i in range(self.move_num(), move) :
                 self.board.push(self.moves[i])
         else :
-            for _ in range(self.turn_num() - turn) :
+            for _ in range(self.move_num() - move) :
                 self.board.pop()
  
     def num_pieces(self) :
@@ -72,7 +72,7 @@ class Game:
                 self.board.push(self.moves[i])
         return captures
 
-with open('.data/samples/example_game.pgn', 'r') as my_file :
+with open('../../data/samples/example_game.pgn', 'r') as my_file :
     data = my_file.read()
 
-Game(data).vectorizeMoves()
+Game(data).vectorize_moves()
