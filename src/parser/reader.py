@@ -20,19 +20,19 @@ class Game:
             return 1
         raise Exception("No AI players detected")
 
-    def turn_num(self) :
+    def move_num(self) :
         return len(self.board.move_stack)
     
-    def go_to_turn(self, turn) :
-        if self.turn_num() == turn :
+    def go_to_move(self, move) :
+        if self.move_num() == move :
             return
-        elif turn < 0 or turn > len(self.moves) :
-            raise Exception("turn out of bounds in goToTurn")
-        elif self.turn_num() < turn :
-            for i in range(self.turn_num(), turn) :
+        elif move < 0 or move > len(self.moves) :
+            raise Exception("move out of bounds in go_to_move")
+        elif self.move_num() < move :
+            for i in range(self.move_num(), move) :
                 self.board.push(self.moves[i])
         else :
-            for _ in range(self.turn_num() - turn) :
+            for _ in range(self.move_num() - move) :
                 self.board.pop()
  
     def num_pieces(self) :
@@ -44,7 +44,7 @@ class Game:
         return (white_num, len(pieces.keys()) - white_num)
 
     def pieces_lost(self) :
-        self.go_to_turn(0)
+        self.go_to_move(0)
         captures = []
         pieces = collections.defaultdict(int)
         for location, piece in self.board.piece_map().items() :
@@ -65,7 +65,7 @@ class Game:
 
     def vectorize_moves(self):
         coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
-        return pad(coords, 35 * 2 * 4) # 35 turns, 2 players, 4 coords
+        return pad(coords, 35 * 2 * 4) # 35 moves, 2 players, 4 coords
 
 def to_coord(uci):
     return [ord(uci[0]) - ord('a'), 
