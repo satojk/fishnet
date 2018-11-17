@@ -71,9 +71,9 @@ class Game:
             matrix[location][dimension2][piece.piece_type-1] = True
         return matrix.flatten()
 
-    def vectorize_moves(self):
+    def vectorize_moves(self, n):
         coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
-        return pad(coords, 35 * 2 * 4) # 35 moves, 2 players, 4 coords
+        return pad(coords, n * 2 * 4) # 35 moves, 2 players, 4 coords
 
 def to_coord(uci):
     return [ord(uci[0]) - ord('a'), 
