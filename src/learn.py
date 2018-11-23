@@ -2,6 +2,7 @@ import sys
 import pickle
 import numpy as np
 from time import sleep
+
 from parser.reader import Game
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
@@ -9,12 +10,27 @@ from sklearn.model_selection import train_test_split
 
 _PGN_PATH_AND_FILENAME = './data/games.pgn'
 
+##########################################################
+# Utils
+##########################################################
+
 def load_games():
     with open(_PGN_PATH_AND_FILENAME, 'r') as f:
         large_pgn = f.read()
     pgns = large_pgn.split('\n\n\n')[:-1]
     return [Game(pgn) for pgn in pgns]
 
+
+def extract_features(games, extractor):
+    out = [[],[]]
+    for game in games:
+        out[0].append(extractor(game))
+        out[1].append(game.ai_player())
+    return map(np.array, out)
+
+##########################################################
+# Extractors
+##########################################################
 
 def extract_pieces(game):
     game.go_to_move(len(game.moves))
@@ -82,14 +98,9 @@ def extract_sparse_vector(game):
 def extract_sparse_vector_endgame(game):
     return game.board_state(len(game.moves))
 
-
-def extract_features(games, extractor):
-    out = [[],[]]
-    for game in games:
-        out[0].append(extractor(game))
-        out[1].append(game.ai_player())
-    return map(np.array, out)
-
+##########################################################
+# Generic pipeline
+##########################################################
 
 def dataset_split(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
@@ -99,27 +110,42 @@ def dataset_split(X, y):
     return X_train, X_test, X_val, y_train, y_test, y_val
 
 
-def main():
-    outputs = {}
-    games = load_games()
-    X, y = extract_features(games, extract_pieces)
-    X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
-
-    C = 1.0  # SVM regularization parameter
-    models = [
-            ["Log-Reg: ",    LogisticRegression(solver='liblinear')],
-            ["SVM Linear: ", svm.SVC(kernel='linear', C=C)],
-            ["SVM RBF: ",    svm.SVC(kernel='rbf', gamma=0.7, C=C)],
-            ["SVM Poly:",  svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)],
-            ]
-
+def train(models, X_train, y_train, X_test, y_test):
+    output = {}
     for name, clf in models:
         clf.fit(X_train, y_train)
         train_score = clf.score(X_train, y_train)
         test_score = clf.score(X_test, y_test)
-        print(name)
+        output[name] = (train_score, test_score)
+        print("{}: ".format(name))
         print("Train: ", train_score)
         print("Test: ", test_score)
+    return output
+
+
+def extract_and_train(models, games, extractor):
+    X, y = extract_features(games, extractor)
+    X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
+    return train(models, X_train, y_train, X_test, y_test)
+
+
+##########################################################
+# Main
+##########################################################
+
+C = 1.0  # SVM regularization parameter
+models = [
+        ["Log-Reg",    LogisticRegression(solver='liblinear')],
+        ["SVM Linear", svm.SVC(kernel='linear', C=C)],
+        ["SVM RBF",    svm.SVC(kernel='rbf', gamma=0.7, C=C)],
+        ["SVM Poly",  svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)],
+        ]
+
+def main():
+    outputs = {}
+    games = load_games()
+    # train_n_moves(models, games)
+    extract_and_train(models, extract_coords)
 
 if __name__ == '__main__':
     main()
