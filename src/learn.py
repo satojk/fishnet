@@ -17,12 +17,54 @@ def load_games():
 
 
 def extract_pieces(game):
-    game.go_to_turn(len(game.moves))
-    return game.num_pieces()
+    game.go_to_move(len(game.moves))
+    a, b = game.num_pieces()
+    out = np.zeros(256)
+    out[(a-1)*16 + (b-1)] = 1
+    return out
+
+def generate_coefficient_matrix_for_extract_pieces(clf):
+    '''
+    Generate a 16 x 16 coefficient matrix from a 256-long vector of
+    coefficients (from a trained classifier)
+    Probably should only be used for the above extractor `extract_pieces`
+    '''
+    coeff_matrix = np.zeros((16, 16))
+    for a in range(16):
+        for b in range(16):
+            coeff_matrix[a][b] = round(clf.coef_[0][a*16 + b], 2)
+    return coeff_matrix
 
 
-def extract_coords(game):
-    return game.vectorize_moves()
+def extract_coords_n_moves(game, n=35):
+    return game.vectorize_moves(n)
+
+
+def extract_sparse_vector(game):
+    full_game_vector = np.array([])
+    next_state = game.board_state(0)
+    for i in range(1, 36):
+        try:
+            next_state = game.board_state(i)
+        except Exception:
+            pass
+        full_game_vector = np.concatenate((full_game_vector, next_state))
+    return full_game_vector
+
+def extract_sparse_vector_n_moves_even(game, n=35):
+    n_moves_vector = np.array([])
+    next_state = game.board_state(0)
+    for i in range(1, n+1):
+        try:
+            next_state = game.board_state(i)
+        except Exception:
+            pass
+        if i % 2 == 0:
+            n_moves_vector = np.concatenate((n_moves_vector, next_state))
+    return n_moves_vector
+
+def extract_sparse_vector_endgame(game):
+    return game.board_state(len(game.moves))
 
 
 def extract_sparse_vector(game):
@@ -60,47 +102,24 @@ def dataset_split(X, y):
 def main():
     outputs = {}
     games = load_games()
-    for n in range(2, 41, 2):
-        def extract_sparse_vector_n_moves_even(game):
-            n_moves_vector = np.array([])
-            next_state = game.board_state(0)
-            for i in range(1, n+1):
-                try:
-                    next_state = game.board_state(i)
-                except Exception:
-                    pass
-                if i % 2 == 0:
-                    n_moves_vector = np.concatenate((n_moves_vector, next_state))
-            return n_moves_vector
-        iter_outputs = {}
-        print('Running simulations for n = {}'.format(n))
-        print('Extraction is extract_sparse_vector_n_moves_even')
-        X, y = extract_features(games, extract_sparse_vector_n_moves_even)
-        X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
+    X, y = extract_features(games, extract_pieces)
+    X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
 
-        C = 1.0  # SVM regularization parameter
-        models = [
-                ["Log-Reg: ",    LogisticRegression(solver='liblinear')],
-                ["SVM Linear: ", svm.SVC(kernel='linear', C=C)],
-                ["SVM RBF: ",    svm.SVC(kernel='rbf', gamma=0.7, C=C)],
-                ["SVM Poly:",  svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)],
-                ]
+    C = 1.0  # SVM regularization parameter
+    models = [
+            ["Log-Reg: ",    LogisticRegression(solver='liblinear')],
+            ["SVM Linear: ", svm.SVC(kernel='linear', C=C)],
+            ["SVM RBF: ",    svm.SVC(kernel='rbf', gamma=0.7, C=C)],
+            ["SVM Poly:",  svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)],
+            ]
 
-        for name, clf in models:
-            clf.fit(X_train, y_train)
-            train_score = clf.score(X_train, y_train)
-            test_score = clf.score(X_test, y_test)
-            iter_outputs[name.strip(': ')] = (train_score, test_score)
-            print(name)
-            print("Train: ", train_score)
-            print("Test: ", test_score)
-
-        outputs[n] = iter_outputs
-
-        print('\n\n')
-        sys.stdout.flush()
-    with open('outputs.pkl', 'wb') as pkl:
-        pickle.dump(outputs, pkl)
+    for name, clf in models:
+        clf.fit(X_train, y_train)
+        train_score = clf.score(X_train, y_train)
+        test_score = clf.score(X_test, y_test)
+        print(name)
+        print("Train: ", train_score)
+        print("Test: ", test_score)
 
 if __name__ == '__main__':
     main()
