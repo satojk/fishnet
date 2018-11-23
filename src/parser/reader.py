@@ -20,9 +20,11 @@ class Game:
             return 1
         raise Exception("No AI players detected")
 
+
     def move_num(self):
         return len(self.board.move_stack)
-    
+
+
     def go_to_move(self, move):
         if self.move_num() == move:
             return
@@ -34,7 +36,8 @@ class Game:
         else:
             for _ in range(self.move_num() - move):
                 self.board.pop()
- 
+
+
     def num_pieces(self):
         pieces = self.board.piece_map()
         white_num = 0
@@ -42,6 +45,7 @@ class Game:
             if piece.color == chess.WHITE:
                 white_num += 1
         return (white_num, len(pieces.keys()) - white_num)
+
 
     def pieces_lost(self):
         self.go_to_move(0)
@@ -63,6 +67,7 @@ class Game:
                 self.board.push(self.moves[i])
         return captures
 
+
     def board_state(self, move_num):
         self.go_to_move(move_num)
         matrix = np.zeros((64, 2, 6), dtype = 'bool')
@@ -75,15 +80,20 @@ class Game:
         coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
         return pad(coords, n * 2 * 4) # 35 moves, 2 players, 4 coords
 
+
+##########################################################
+# Utils
+##########################################################
+
 def to_coord(uci):
-    return [ord(uci[0]) - ord('a'), 
-            int(uci[1]) - 1, 
-            ord(uci[2]) - ord('a'), 
+    return [ord(uci[0]) - ord('a'),
+            int(uci[1]) - 1,
+            ord(uci[2]) - ord('a'),
             int(uci[3]) - 1 ]
+
 
 def pad(array, length):
     pad = np.zeros(length)
     end = min(len(array), length)
     pad[:end] = array[:end]
     return pad
-
