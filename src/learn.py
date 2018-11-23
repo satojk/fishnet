@@ -67,32 +67,16 @@ def extract_sparse_vector(game):
         full_game_vector = np.concatenate((full_game_vector, next_state))
     return full_game_vector
 
+
 def extract_sparse_vector_n_moves_even(game, n=35):
     n_moves_vector = np.array([])
     next_state = game.board_state(0)
     for i in range(1, n+1):
-        try:
-            next_state = game.board_state(i)
-        except Exception:
-            pass
+        try: next_state = game.board_state(i)
+        except Exception: pass
         if i % 2 == 0:
             n_moves_vector = np.concatenate((n_moves_vector, next_state))
     return n_moves_vector
-
-def extract_sparse_vector_endgame(game):
-    return game.board_state(len(game.moves))
-
-
-def extract_sparse_vector(game):
-    full_game_vector = np.array([])
-    next_state = game.board_state(0)
-    for i in range(1, 36):
-        try:
-            next_state = game.board_state(i)
-        except Exception:
-            pass
-        full_game_vector = np.concatenate((full_game_vector, next_state))
-    return full_game_vector
 
 
 def extract_sparse_vector_endgame(game):
