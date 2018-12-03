@@ -47,6 +47,18 @@ def extract_pieces(game):
     out[(a-1)*16 + (b-1)] = 1
     return out
 
+def extract_num_pieces_over_n_moves(game, n=50):
+    n_moves_vector = []
+    for i in range(1, n+1):
+        try:
+            game.go_to_move(i)
+            next_num_pieces = game.num_pieces()[i%2]
+        except Exception:
+            next_num_pieces = 0
+        n_moves_vector.append(next_num_pieces)
+    return np.array(n_moves_vector)
+
+
 def generate_coefficient_matrix_for_extract_pieces(clf):
     '''
     Generate a 16 x 16 coefficient matrix from a 256-long vector of
@@ -94,6 +106,32 @@ def extract_controlled_squares(game, n=50):
         try: next_controlled = game.controlled_squares(i)
         except Exception: next_controlled = 0
         n_moves_vector.append(next_controlled)
+    #print(n_moves_vector)
+    return np.array(n_moves_vector)
+
+def extract_average_controlled_squares(game):
+    n_moves_vector_even = []
+    n_moves_vector_odd = []
+    i = 1
+    while True:
+        try:
+            controlled_squares = game.controlled_squares(i)
+            if i % 2:
+                n_moves_vector_odd.append(controlled_squares)
+            else:
+                n_moves_vector_even.append(controlled_squares)
+        except Exception:
+            break
+        i += 1
+    return (sum(n_moves_vector_even) / len(n_moves_vector_even),
+            sum(n_moves_vector_odd) / len(n_moves_vector_odd))
+
+def extract_control_spread(game, n=50):
+    n_moves_vector = []
+    for i in range(1, n+1):
+        try: next_control_spread = game.controlled_squares_spread(i)
+        except Exception: next_control_spread = 0
+        n_moves_vector.append(next_control_spread)
     #print(n_moves_vector)
     return np.array(n_moves_vector)
 
