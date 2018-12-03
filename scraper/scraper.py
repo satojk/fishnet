@@ -26,14 +26,14 @@ _VERBOSE = True
 # request made in the scraping session. all requests between the first and last
 # should be simply incrementing/decrementing the id and pageno.
 
-_PAGE_REQUESTS_FILENAME = 'page_requests.pkl'
+_PAGE_REQUESTS_FILENAME = '../data/page_requests.pkl'
 
 # GAME IDS is a dict of {GAME_ID: ORIGINAL_SCRAPING_SESSION}
-_GAME_IDS_FILENAME = 'game_ids.pkl'
+_GAME_IDS_FILENAME = '../data/game_ids.pkl'
 
 # SCRAPING SESSION is an int. It records how many scraping sessions have
 # happened
-_SCRAPING_SESSION_FILENAME = 'scraping_session.pkl'
+_SCRAPING_SESSION_FILENAME = '../data/scraping_session.pkl'
 
 ###############################################################################
 ### THE FOLLOWING 4 FUNCTIONS ARE SIMPLY FOR PICKLING / UNPICKLING INFO     ###

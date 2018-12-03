@@ -80,6 +80,18 @@ class Game:
         coords = np.array([to_coord(chess.Move.uci(m)) for m in self.moves]).flatten()
         return pad(coords, n * 2 * 4) # 35 moves, 2 players, 4 coords
 
+    def controlled_squares_delta(self, move_num):
+        player = move_num % 2
+        self.go_to_move(move_num - 1)
+        previous_controlled_squares = 0
+        for i in range(64):
+            previous_controlled_squares += self.board.is_attacked_by(player, i)
+        controlled_squares = 0
+        self.go_to_move(move_num)
+        for i in range(64):
+            controlled_squares += self.board.is_attacked_by(player, i)
+        return controlled_squares - previous_controlled_squares
+
 
 ##########################################################
 # Utils
