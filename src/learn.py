@@ -125,8 +125,10 @@ def get_features(extractor):
         print("FAILED to get cached features...")
         print("Extracting features...")
         data = extract_features(extractor)
+        print("Caching features...")
         serialize_data(_CACHE_FEATURE_PATH, data)
 
+    print("Transforming to NumPy arrays")
     return map(np.array, data)
 
 def dataset_split(X, y):
@@ -141,18 +143,21 @@ def train(models, X_train, y_train, X_test, y_test):
     print("Training...")
     output = {}
     for name, clf in models:
+        print("Training {}: ".format(name))
         clf.fit(X_train, y_train)
         train_score = clf.score(X_train, y_train)
         test_score = clf.score(X_test, y_test)
         output[name] = (train_score, test_score)
-        print("{}: ".format(name))
         print("Train: ", train_score)
         print("Test: ", test_score)
     return output
 
 
-def extract_and_train(extractor):
+def extract_and_train(models, extractor):
     X, y = get_features(extractor)
+    print(X.shape)
+    X = X[:5000]
+    y = y[:5000]
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     return train(models, X_train, y_train, X_test, y_test)
 
@@ -165,14 +170,14 @@ C = 1.0  # SVM regularization parameter
 models = [["Log-Reg", LogisticRegression(solver='liblinear')]]
 
 for C in [0.1, 0.5, 1.0, 2.0, 10.0]:
-    models.append(["SVM Linear", svm.SVC(kernel='linear', C=C)])
-    models.append(["SVM RBF", svm.SVC(kernel='rbf', gamma=0.7, C=C)])
-    models.append(["SVM Poly", svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)])
+    models.append(["SVM Linear {}".format(C), svm.SVC(kernel='linear', C=C)])
+    models.append(["SVM RBF {}".format(C), svm.SVC(kernel='rbf', gamma=0.7, C=C)])
+    models.append(["SVM Poly {}".format(C), svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)])
 
 def main():
-    outputs = {}
     # train_n_moves(models, games)
-    extract_and_train(extract_sparse_vector_n_moves_even)
+    output = extract_and_train(models, extract_sparse_vector_n_moves_even)
+    print(output)
 
 if __name__ == '__main__':
     main()
