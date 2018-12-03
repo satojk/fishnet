@@ -3,20 +3,30 @@ import io
 import chess
 import chess.pgn
 import collections
+from collections import defaultdict
 
 
 class Game:
     def __init__(self, pgn_text):
         self.pgn_text = pgn_text
-        self.moves = [m for m in chess.pgn.read_game(io.StringIO(self.pgn_text)).main_line()]
+
+        self.obj = chess.pgn.read_game(io.StringIO(self.pgn_text))
+        self.headers = defaultdict(str, self.obj.headers)
+
+        self.moves = [m for m in self.obj.main_line()]
         self.board = chess.Board()
 
 
     def ai_player(self):
-        lines = self.pgn_text.split('\n')
-        if lines[4] == "[White \"lichess AI level 5\"]":
+        # White Cases
+        if self.headers["White"] == "lichess AI level 5":
             return 0
-        if lines[5] == "[Black \"lichess AI level 5\"]":
+        if self.headers["WhiteIsComp"] == "Yes":
+            return 0
+        # Black Cases
+        if self.headers["Black"] == "lichess AI level 5":
+            return 1
+        if self.headers["BlackIsComp"] == "Yes":
             return 1
         raise Exception("No AI players detected")
 
