@@ -52,7 +52,7 @@ def generate_coefficient_matrix_for_extract_pieces(clf):
     return coeff_matrix
 
 
-def extract_coords_n_moves(game, n=35):
+def extract_coords_n_moves(game, n=15):
     return game.vectorize_moves(n)
 
 
@@ -68,7 +68,7 @@ def extract_sparse_vector(game):
     return full_game_vector
 
 
-def extract_sparse_vector_n_moves_even(game, n=35):
+def extract_sparse_vector_n_moves_even(game, n=15):
     n_moves_vector = np.array([])
     next_state = game.board_state(0)
     for i in range(1, n+1):
@@ -81,6 +81,15 @@ def extract_sparse_vector_n_moves_even(game, n=35):
 
 def extract_sparse_vector_endgame(game):
     return game.board_state(len(game.moves))
+
+def extract_controlled_squares(game, n=50):
+    n_moves_vector = []
+    for i in range(1, n+1):
+        try: next_controlled = game.controlled_squares(i)
+        except Exception: next_controlled = 0
+        n_moves_vector.append(next_controlled)
+    #print(n_moves_vector)
+    return np.array(n_moves_vector)
 
 ##########################################################
 # Generic pipeline
@@ -129,7 +138,7 @@ def main():
     outputs = {}
     games = load_games()
     # train_n_moves(models, games)
-    extract_and_train(models, extract_coords)
+    extract_and_train(models, games, extract_controlled_squares)
 
 if __name__ == '__main__':
     main()

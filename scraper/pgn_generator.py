@@ -5,13 +5,13 @@ from time import sleep
 _BASE_URL = 'https://lichess.org/game/export/XXXXX?evals=0&clocks=0'
 
 # GAME_IDS is a dictionary of GAME_ID -> SCRAPING_SESSION pairs
-_GAME_IDS_FILENAME = 'game_ids.pkl'
+_GAME_IDS_FILENAME = '../data/game_ids.pkl'
 
 # CONVERTED_GAME_IDS is a set of GAME_IDS which we already have the pgns for
-_CONVERTED_GAME_IDS_FILENAME = 'converted_game_ids.pkl'
+_CONVERTED_GAME_IDS_FILENAME = '../data/converted_game_ids.pkl'
 
 # PGN is a large pgn file containing a bunch of games
-_PGN_FILENAME = 'games.pgn'
+_PGN_FILENAME = '../data/games.pgn'
 
 def load_game_ids():
     '''
