@@ -1,10 +1,13 @@
 import sys
 import gzip
 import ubjson
+import pickle
 import numpy as np
 import pprint
 pp = pprint.PrettyPrinter()
 from time import sleep
+from copy import deepcopy
+from functools import partial
 
 from parser.reader import Game
 from sklearn import svm
@@ -91,7 +94,6 @@ def generate_coefficient_matrix_for_extract_pieces(clf):
             coeff_matrix[a][b] = round(clf.coef_[0][a*16 + b], 2)
     return coeff_matrix
 
-
 def extract_coords_n_moves(game, n=15):
     return game.vectorize_moves(n)
 
@@ -120,6 +122,7 @@ def extract_sparse_vector_n_moves_even(game, n=14):
 def extract_sparse_vector_endgame(game):
     return game.board_state(len(game.moves))
 
+
 def extract_controlled_squares(game, n=50):
     n_moves_vector = []
     for i in range(1, n+1):
@@ -128,6 +131,15 @@ def extract_controlled_squares(game, n=50):
         n_moves_vector.append(next_controlled)
     #print(n_moves_vector)
     return np.array(n_moves_vector)
+
+
+def generate_coefficient_matrix_for_extract_controlled(clf):
+    '''
+    Probably should only be used for above extractor
+    `extract_controlled_squares`
+    '''
+    return list(map(lambda x: round(x, 2), clf.coef_[0]))
+
 
 def extract_average_controlled_squares(game):
     n_moves_vector_even = []
@@ -145,6 +157,7 @@ def extract_average_controlled_squares(game):
         i += 1
     return (sum(n_moves_vector_even) / len(n_moves_vector_even),
             sum(n_moves_vector_odd) / len(n_moves_vector_odd))
+
 
 def extract_control_spread(game, n=50):
     n_moves_vector = []
@@ -191,6 +204,7 @@ def get_features(extractor):
     print("Transforming to NumPy arrays")
     return map(np.array, data)
 
+
 def dataset_split(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.4, random_state=1)
@@ -217,6 +231,16 @@ def extract_and_train(models, extractor):
     X, y = get_features(extractor)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     return train(models, X_train, y_train, X_test, y_test)
+
+def extract_and_train_over_many_n(extractor):
+    outputs = {}
+    for i in range(2, 37, 2):
+        print('\n\nApplying extractor with n = {}'.format(i))
+        partial_extractor = partial(extractor, n=i)
+        out = extract_and_train(partial_extractor)
+        outputs[i] = deepcopy(out)
+    with open('outputs.pkl', 'wb') as pkl:
+        pickle.dump(outputs, pkl)
 
 
 ##########################################################
