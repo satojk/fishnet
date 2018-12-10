@@ -80,10 +80,10 @@ class Game:
 
     def board_state(self, move_num):
         self.go_to_move(move_num)
-        matrix = np.zeros((64, 2, 6), dtype = 'bool')
+        matrix = np.zeros((64, 2, 6))
         for location, piece in self.board.piece_map().items():
             dimension2 = 0 if piece.color else 1
-            matrix[location][dimension2][piece.piece_type-1] = True
+            matrix[location][dimension2][piece.piece_type-1] = 1
         return matrix.flatten()
 
     def vectorize_moves(self, n):

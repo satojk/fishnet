@@ -14,12 +14,7 @@ from sklearn.decomposition import PCA
 
 from keras.models import Sequential
 from keras.layers import Dense
-
-# _PGN_PATH_AND_FILENAME = './data/games.pgn'
-# _CACHE_FEATURE_PATH = './data/games_cache.pkl'
-
-_PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
-_CACHE_FEATURE_PATH = './data/fics_cache.pkl'
+from keras.layers import LSTM
 
 ##########################################################
 # Utils
@@ -45,7 +40,7 @@ def deserialize_data(src):
         return ubjson.load(f)
 
 ##########################################################
-# Extractors
+# PCA
 ##########################################################
 
 def performPCA(X, variance):
@@ -117,8 +112,19 @@ def extract_sparse_vector_n_moves_even(game, n=14):
     return n_moves_vector
 
 
+def extract_sparse_vector_time_series(game, n=30):
+    full_game = np.zeros((n, 768)) # Look at first n moves
+    for i in range(1, n+1):
+        try:
+            next_state = game.board_state(i)
+            full_game[i-1] = next_state
+        except Exception: pass
+    return full_game
+
+
 def extract_sparse_vector_endgame(game):
     return game.board_state(len(game.moves))
+
 
 def extract_controlled_squares(game, n=50):
     n_moves_vector = []
@@ -126,8 +132,8 @@ def extract_controlled_squares(game, n=50):
         try: next_controlled = game.controlled_squares(i)
         except Exception: next_controlled = 0
         n_moves_vector.append(next_controlled)
-    #print(n_moves_vector)
     return np.array(n_moves_vector)
+
 
 def extract_average_controlled_squares(game):
     n_moves_vector_even = []
@@ -145,6 +151,7 @@ def extract_average_controlled_squares(game):
         i += 1
     return (sum(n_moves_vector_even) / len(n_moves_vector_even),
             sum(n_moves_vector_odd) / len(n_moves_vector_odd))
+
 
 def extract_control_spread(game, n=50):
     n_moves_vector = []
@@ -174,22 +181,31 @@ def extract_features(extractor):
     return out
 
 
-def get_features(extractor):
-    try:
-        print("Attempting to get cached features...")
-        data = deserialize_data(_CACHE_FEATURE_PATH)
-        print("SUCCESS")
-    except:
-        print("FAILED to get cached features...")
-        print("Extracting features...")
-        X, y = extract_features(extractor)
-        X_reduced = performPCA(np.array(X), variance=0.95)
-        data =  list(X_reduced), y
-        print("Caching features...")
-        serialize_data(_CACHE_FEATURE_PATH, data)
+def get_features(extractor, PCA=True, CACHE=True):
+    if CACHE:
+        try:
+            print("Attempting to get cached features...")
+            data = deserialize_data(_CACHE_FEATURE_PATH)
+            print("SUCCESS")
+        except:
+            print("FAILED to get cached features...")
+            print("Extracting features...")
+            data = extract_features(extractor)
+            if PCA:
+                X, y = data
+                X_reduced = performPCA(np.array(X), variance=0.95)
+                data = X_reduced.tolist(), y
+            print("Caching features...")
+            serialize_data(_CACHE_FEATURE_PATH, data)
+        print("Transforming to NumPy arrays")
+        return map(np.array, data)
 
-    print("Transforming to NumPy arrays")
-    return map(np.array, data)
+    else:
+        X, y = extract_features(extractor)
+        X, y = np.array(X), np.array(y)
+        if PCA: X = performPCA(np.array(X), variance=0.95)
+        return X, y
+
 
 def dataset_split(X, y):
     X_train, X_test, y_train, y_test = train_test_split(
@@ -220,7 +236,7 @@ def extract_and_train(models, extractor):
 
 
 ##########################################################
-# Main Pipeline
+# Pipelines
 ##########################################################
 
 def scikit_training():
@@ -243,24 +259,75 @@ def scikit_training():
 def keras_training():
     X, y = get_features(extract_sparse_vector_n_moves_even)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
-    _, n = X.shape
+    _, n = X_train.shape
+    print(X_train.shape)
 
     outputs = {}
 
-    model = Sequential()
-    model.add(Dense(units=200, activation='relu', input_dim=n))
-    model.add(Dense(units=40, activation='sigmoid'))
-    model.add(Dense(1, activation='sigmoid'))
-    model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy']) 
+    for first in [60, 100, 140, 180, 220, 260]:
+        for second in [20, 30, 40, 50]:
+            for third in [4, 8, 12]:
+                for epochs in [20, 50, 100]:
+                    print(first, second, third, epochs)
 
-    model.fit(X_train, y_train, epochs=50, batch_size=32, verbose=1)
-    loss, acc = model.evaluate(X_test, y_test, batch_size=128)
-    outputs[(first_units, second_units)] = acc
+                    model = Sequential()
+                    model.add(Dense(units=first, activation='relu', input_dim=n))
+                    model.add(Dense(units=second, activation='relu'))
+                    model.add(Dense(units=third, activation='relu'))
+                    model.add(Dense(1, activation='sigmoid'))
+                    model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy']) 
+
+                    model.fit(X_train, y_train, epochs=epochs, batch_size=32, verbose=1)
+                    loss, acc = model.evaluate(X_test, y_test, batch_size=128)
+                    print("Accuracy: ", acc)
+
+                    outputs[(first, second, third, epochs)] = acc
 
     pp.pprint(outputs)
 
+def rnn_training(CACHE):
+    X, y = get_features(extract_sparse_vector_time_series, PCA=False, CACHE=CACHE)
+    X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
+    m, t, n = X_train.shape
+    print("Timeseries of {} steps".format(t))
+
+    outputs = {}
+
+    for epochs in [50]:
+        for num in [5]:
+            model = Sequential()
+            model.add(LSTM(num, input_shape=(t, n)))
+            model.add(Dense(1, activation='sigmoid'))
+            model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy']) 
+
+            model.fit(X_train, y_train, epochs=epochs, batch_size=32, verbose=1)
+            loss, acc = model.evaluate(X_test, y_test, batch_size=128)
+            print("Accuracy: ", acc)
+
+            outputs[(num, epochs)] = acc
+            pp.pprint(outputs)
+
+    pp.pprint(outputs)
+
+
+##########################################################
+# Main
+##########################################################
+
+# Smaller dataset for cross-validation
+_PGN_PATH_AND_FILENAME = './data/games.pgn'
+# _CACHE_FEATURE_PATH = './data/games_cache.pkl'
+# _CACHE_FEATURE_PATH = './data/games_RNN_cache.pkl'
+
+# Large dataset
+# _PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
+# _CACHE_FEATURE_PATH = './data/fics_cache.pkl'
+# _CACHE_FEATURE_PATH = './data/fics_RNN_cache.pkl'
+
+
 def main():
-    keras_training()
+    rnn_training(CACHE=True)
+    # keras_training()
 
 if __name__ == '__main__':
     main()
