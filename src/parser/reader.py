@@ -98,6 +98,23 @@ class Game:
             controlled_squares += self.board.is_attacked_by(player, i)
         return controlled_squares
 
+    def controlled_squares_spread(self, move_num):
+        player = move_num % 2
+        controlled_squares = []
+        self.go_to_move(move_num)
+        centroid = [0, 0]
+        for i in range(64):
+            if self.board.is_attacked_by(player, i):
+                controlled_squares.append((i//8, i%8))
+                centroid[0] += (i//8)
+                centroid[1] += (i%8)
+        centroid[0] /= len(controlled_squares)
+        centroid[1] /= len(controlled_squares)
+        total_euclid_distance = 0
+        for elem in controlled_squares:
+            total_euclid_distance += (elem[0] - centroid[0])**2 + (elem[1] - centroid[1])**2
+        return total_euclid_distance / len(controlled_squares)
+
 
 ##########################################################
 # Utils
