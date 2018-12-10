@@ -2,16 +2,24 @@ import sys
 import gzip
 import ubjson
 import numpy as np
+import pprint
+pp = pprint.PrettyPrinter()
 from time import sleep
 
 from parser.reader import Game
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.decomposition import PCA
+
+from keras.models import Sequential
+from keras.layers import Dense
 
 # _PGN_PATH_AND_FILENAME = './data/games.pgn'
+# _CACHE_FEATURE_PATH = './data/games_cache.pkl'
+
 _PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
-_CACHE_FEATURE_PATH = './data/fics_sparse_vector_n_14.pkl'
+_CACHE_FEATURE_PATH = './data/fics_cache.pkl'
 
 ##########################################################
 # Utils
@@ -35,6 +43,18 @@ def serialize_data(src, data):
 def deserialize_data(src):
     with gzip.open(src, "rb") as f:
         return ubjson.load(f)
+
+##########################################################
+# Extractors
+##########################################################
+
+def performPCA(X, variance):
+    pca = PCA(variance)
+    print("Reducing dimensions with PCA")
+    print("OG: ", X.shape)
+    components = pca.fit_transform(X)
+    print("Reduced: ", components.shape)
+    return components
 
 ##########################################################
 # Extractors
@@ -124,7 +144,9 @@ def get_features(extractor):
     except:
         print("FAILED to get cached features...")
         print("Extracting features...")
-        data = extract_features(extractor)
+        X, y = extract_features(extractor)
+        X_reduced = performPCA(np.array(X), variance=0.95)
+        data =  list(X_reduced), y
         print("Caching features...")
         serialize_data(_CACHE_FEATURE_PATH, data)
 
@@ -155,29 +177,52 @@ def train(models, X_train, y_train, X_test, y_test):
 
 def extract_and_train(models, extractor):
     X, y = get_features(extractor)
-    print(X.shape)
-    X = X[:5000]
-    y = y[:5000]
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     return train(models, X_train, y_train, X_test, y_test)
 
 
 ##########################################################
-# Main
+# Main Pipeline
 ##########################################################
 
-C = 1.0  # SVM regularization parameter
-models = [["Log-Reg", LogisticRegression(solver='liblinear')]]
+def scikit_training():
+    C = 1.0  # SVM regularization parameter
+    models = [["Log-Reg", LogisticRegression(solver='liblinear')]]
+    models.append(["SVM RBF C=10 gamma=0.04", svm.SVC(kernel='rbf', gamma=0.04, C=10)])
 
-for C in [0.1, 0.5, 1.0, 2.0, 10.0]:
-    models.append(["SVM Linear {}".format(C), svm.SVC(kernel='linear', C=C)])
-    models.append(["SVM RBF {}".format(C), svm.SVC(kernel='rbf', gamma=0.7, C=C)])
-    models.append(["SVM Poly {}".format(C), svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)])
+    for C in [0.1, 0.5, 1.0, 2.0, 10.0]:
+        models.append(["SVM Linear {}".format(C), svm.SVC(kernel='linear', C=C)])
+        models.append(["SVM RBF {}".format(C), svm.SVC(kernel='rbf', gamma=0.7, C=C)])
+        models.append(["SVM Poly {}".format(C), svm.SVC(kernel='poly', gamma='auto', degree=3, C=C)])
+
+    for C in [0.1, 0.5, 1.0, 2.0, 10.0]:
+        for deg in np.arange(0.001, 0.05, 0.005):
+            models.append(["SVM RBF C={} gamma={}".format(C, deg), svm.SVC(kernel='rbf', gamma=deg, C=C)])
+
+    output = extract_and_train(models, extract_sparse_vector_n_moves_even)
+    pp.pprint(output)
+
+def keras_training():
+    X, y = get_features(extract_sparse_vector_n_moves_even)
+    X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
+    _, n = X.shape
+
+    outputs = {}
+
+    model = Sequential()
+    model.add(Dense(units=200, activation='relu', input_dim=n))
+    model.add(Dense(units=40, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid'))
+    model.compile(loss='binary_crossentropy', optimizer='sgd', metrics=['accuracy']) 
+
+    model.fit(X_train, y_train, epochs=50, batch_size=32, verbose=1)
+    loss, acc = model.evaluate(X_test, y_test, batch_size=128)
+    outputs[(first_units, second_units)] = acc
+
+    pp.pprint(outputs)
 
 def main():
-    # train_n_moves(models, games)
-    output = extract_and_train(models, extract_sparse_vector_n_moves_even)
-    print(output)
+    keras_training()
 
 if __name__ == '__main__':
     main()
