@@ -43,18 +43,6 @@ def deserialize_data(src):
         return ubjson.load(f)
 
 ##########################################################
-# PCA
-##########################################################
-
-def performPCA(X, variance):
-    pca = PCA(variance)
-    print("Reducing dimensions with PCA")
-    print("OG: ", X.shape)
-    components = pca.fit_transform(X)
-    print("Reduced: ", components.shape)
-    return components
-
-##########################################################
 # Extractors
 ##########################################################
 
@@ -114,7 +102,9 @@ def extract_sparse_vector_n_moves_even(game, n=14):
     return n_moves_vector
 
 
-def extract_sparse_vector_time_series(game, n=30):
+NUM_TIME_STEPS = 15
+
+def extract_sparse_vector_time_series(game, n=NUM_TIME_STEPS):
     full_game = np.zeros((n, 768)) # Look at first n moves
     for i in range(1, n+1):
         try:
@@ -174,6 +164,33 @@ def extract_control_spread(game, n=50):
 
 
 ##########################################################
+# PCA
+##########################################################
+
+def performPCA(X, variance):
+    print("Reducing dimensions with PCA")
+    print("OG: ", X.shape)
+
+    is_timeseries = len(X.shape) > 2
+    if is_timeseries:
+        print("Data is timeseries")
+        m, t, n = X.shape
+        X = X.reshape(m * t, n)
+        print("Flattened to: ", X.shape)
+
+    pca = PCA(variance)
+    components = pca.fit_transform(X)
+    print("Reduced: ", components.shape)
+
+    if is_timeseries:
+        print(m)
+        components = components.reshape((m, NUM_TIME_STEPS, -1))
+        print("Reshaped to: ", components.shape)
+
+    return components
+
+
+##########################################################
 # Generic pipeline
 ##########################################################
 
@@ -192,7 +209,7 @@ def extract_features(extractor):
     return out
 
 
-def get_features(extractor, PCA=True, CACHE=True):
+def get_features(extractor, CACHE=True):
     if CACHE:
         try:
             print("Attempting to get cached features...")
@@ -200,14 +217,15 @@ def get_features(extractor, PCA=True, CACHE=True):
             print("SUCCESS")
         except:
             print("FAILED to get cached features...")
+
             print("Extracting features...")
-            data = extract_features(extractor)
-            if PCA:
-                X, y = data
-                X_reduced = performPCA(np.array(X), variance=0.95)
-                data = X_reduced.tolist(), y
+            X, y = extract_features(extractor)
+            X_reduced = performPCA(np.array(X), variance=0.95)
+            data = X_reduced.tolist(), y
+
             print("Caching features...")
             serialize_data(_CACHE_FEATURE_PATH, data)
+
         print("Transforming to NumPy arrays")
         return map(np.array, data)
 
@@ -307,15 +325,15 @@ def keras_training():
     pp.pprint(outputs)
 
 def rnn_training(CACHE):
-    X, y = get_features(extract_sparse_vector_time_series, PCA=False, CACHE=CACHE)
+    X, y = get_features(extract_sparse_vector_time_series, CACHE=CACHE)
     X_train, X_test, X_val, y_train, y_test, y_val = dataset_split(X, y)
     m, t, n = X_train.shape
     print("Timeseries of {} steps".format(t))
 
     outputs = {}
 
-    for epochs in [50]:
-        for num in [5]:
+    for epochs in [200]:
+        for num in [10, 15, 20, 25]:
             model = Sequential()
             model.add(LSTM(num, input_shape=(t, n)))
             model.add(Dense(1, activation='sigmoid'))
@@ -338,7 +356,8 @@ def rnn_training(CACHE):
 # Smaller dataset for cross-validation
 _PGN_PATH_AND_FILENAME = './data/games.pgn'
 # _CACHE_FEATURE_PATH = './data/games_cache.pkl'
-# _CACHE_FEATURE_PATH = './data/games_RNN_cache.pkl'
+_CACHE_FEATURE_PATH = './data/games_RNN_cache.pkl'
+
 
 # Large dataset
 # _PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
