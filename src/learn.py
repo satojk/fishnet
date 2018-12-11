@@ -333,7 +333,7 @@ def rnn_training(CACHE):
     outputs = {}
 
     for epochs in [200]:
-        for num in [10, 15, 20, 25]:
+        for num in [10]:
             model = Sequential()
             model.add(LSTM(num, input_shape=(t, n)))
             model.add(Dense(1, activation='sigmoid'))
@@ -354,15 +354,15 @@ def rnn_training(CACHE):
 ##########################################################
 
 # Smaller dataset for cross-validation
-_PGN_PATH_AND_FILENAME = './data/games.pgn'
+# _PGN_PATH_AND_FILENAME = './data/games.pgn'
 # _CACHE_FEATURE_PATH = './data/games_cache.pkl'
-_CACHE_FEATURE_PATH = './data/games_RNN_cache.pkl'
+# _CACHE_FEATURE_PATH = './data/games_RNN_cache.pkl'
 
 
 # Large dataset
-# _PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
+_PGN_PATH_AND_FILENAME = './data/fics_2017_HvC.pgn'
 # _CACHE_FEATURE_PATH = './data/fics_cache.pkl'
-# _CACHE_FEATURE_PATH = './data/fics_RNN_cache.pkl'
+_CACHE_FEATURE_PATH = './data/fics_RNN_cache.pkl'
 
 
 def main():
