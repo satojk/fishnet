@@ -1,6 +1,8 @@
 # fishnet
 Discriminates between Human and AI chess players
 
+Report at `\docs\writeup.pdf` and poster at `\docs\poster.pdf`
+
 ML Techniques
 1. Vectorized form [x1, x2, y1, y2]
 2. Use log-reg for basic baseline
